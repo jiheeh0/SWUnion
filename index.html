@@ -146,6 +146,11 @@
         .text-muted-custom {
             color: #718096;
         }
+
+        /* 부모인 section-team이 활성화(active)되지 않으면 활동 섹션도 절대 보이지 않도록 차단 */
+        .content-section:not(.active) #section-activities {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
