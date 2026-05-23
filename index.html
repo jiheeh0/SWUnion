@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWUnion 프로젝트</title>
+    <!-- 부트스트랩 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 부트스트랩 아이콘 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- 구글 웹폰트 추가 (Montserrat & Pretendard) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* 폰트 및 컬러 변수 정의 */
+        :root {
+            --dark-blue: #07162c;
+            --main-blue: #0f3460;
+            --light-blue: #f4f7fc;
+            --teal-accent: #00e5ff;
+            --teal-dark: #00b4d8;        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--light-blue);
+            color: #2d3748;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* 1. 상단 내비게이션 바 배경 투명 + 블러(Glassmorphism) 적용 */
+        .navbar {
+            background-color: rgba(26, 54, 93, 0.70) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        /* 텍스트 기반 벡터 로고 스타일 (SWUnion) */
+        .logo-wrapper {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+        }
+        .logo-team {
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .logo-union {
+            font-weight: 300;
+            color: var(--teal-accent);
+        }
+        .logo-divider {
+            width: 1px;
+            height: 18px;
+            background-color: rgba(255, 255, 255, 0.3);
+            margin: 0 12px;
+            display: inline-block;
+        }
+        .project-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #cbd5e0;
+        }
+
+        .nav-link {
+            color: #e2e8f0 !important;
+            font-weight: 400;
+            margin-left: 10px;
+            transition: color 0.2s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--teal-accent) !important;
+            font-weight: 500;
+        }
+
+        /* 콘텐츠 화면 전환용 아우터 스타일 */
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 가로 100%를 가득 채우는 풀 위드 교육용 섹션 밴드 */
+        .full-width-band {
+            width: 100%;
+            padding: 90px 0;
+            position: relative;
+        }
+        
+        /* 짝수/홀수 섹션 배경교차로 입체감 부여 */
+        .bg-white-pure {
+            background-color: #ffffff;
+        }
+        .bg-light-accent {
+            background-color: #f8fafc;
+        }
+
+        /* 확실한 경계를 가진 솔리드 구분선 */
+        .solid-section-divider {
+            border: 0;
+            height: 2px;
+            background-color: var(--border-color);
+            margin: 0;
+        }
+
+        /* 뉴스 카드용 스타일 */
+        .news-card {
+            background-color: #ffffff;
+            border: 1px solid #cbd5e0;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+            transition: all 0.3s ease;
+        }
+        .news-card:hover {
+            border-color: var(--teal-dark);
+            transform: translateY(-2px);
+        }
+
+        /* 퀴즈 박스 및 가중치 표기 */
+        .quiz-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            border: 1px solid rgba(15, 52, 96, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 공통 푸터 스타일 (중앙 정렬 + 텍스트 정돈) */
+        footer {
+            background-color: var(--dark-blue);
+            color: #cbd5e0;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .text-muted-custom {
+            color: #718096;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 내비게이션 바 (투명 + 블러처리) -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#" onclick="switchView('main')">
+                <span class="logo-wrapper">
+                    <span class="logo-team">SW</span><span class="logo-union">Union</span>
+                </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="nav-main" href="#" onclick="switchView('main')">캠페인 교육</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-quiz" href="#" onclick="switchView('quiz')">자가진단 퀴즈</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-team" href="#" onclick="switchView('team')">팀 소개</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 첫 번째 페이지 (교육) -->
+    <div id="section-main" class="content-section active">
+    
+        <div class="full-width-band bg-white-pure">
+            <div class="container text-center">
+                <span class="badge bg-primary px-3 py-2 rounded-pill mb-3">올바른 AI 상호작용 지침</span>
+                <h1 class="fw-black text-dark mb-3 display-5">인공지능 정서 의존의 위협</h1>
+                <p class="text-muted lead mx-auto" style="max-width: 800px;">
+                    AI 챗봇은 고도화된 대형 언어 모델 기계일 뿐입니다. 우리가 챗봇에게 마음의 주도권을 통째로 내어줄 때 야기되는 위협들을 스크롤을 내리며 체계적으로 교육해보세요.
+                </p>
+            </div>
+        </div>
+
+        <hr class="solid-section-divider">
+
+        <div class="full-width-band bg-light-accent">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center mb-4">
+                            <span class="badge bg-danger p-3 me-3 rounded-4"><i class="bi bi-heart-break-fill fs-3 text-white"></i></span>
+                            <h2 class="fw-bold text-dark m-0">1. 현실 갈등 회피와 '왜곡된 무조건적 지지'</h2>
+                        </div>
+                        <div class="ps-4 border-start border-4 border-danger py-2 mb-3">
+                            <p class="lead text-muted mb-0">
+                                AI는 절대 화를 내지 않고 나에게 완벽하게 영합하도록 학습되어 있습니다.
+                            </p>
+                        </div>
+                        <p class="text-muted" style="line-height: 1.8;">
+                            언제나 부정적 평가를 내리지 않는 기계와의 대화에 지속적으로 고착되면, 생각의 격차를 조정하거나 타협이 필수적인 현실의 '진짜 인간관계'를 버겁고 무의미하게 여기는 도피적 심리가 발동하기 쉽습니다. 이는 타인과의 적극적인 의견 조율 능력과 사회적 대처 능력을 장기적으로 쇠퇴시키는 원인이 됩니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="solid-section-divider">
+
+        <div class="full-width-band bg-white-pure">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center mb-4">
+                            <span class="badge bg-primary p-3 me-3 rounded-4"><i class="bi bi-newspaper fs-3 text-white"></i></span>
+                            <h2 class="fw-bold text-dark m-0">2. 글로벌 리포트: 갑작스러운 중단과 '사이버 실연'의 실체</h2>
+                        </div>
+                        <div class="ps-4 border-start border-4 border-primary py-2 mb-4">
+                            <p class="lead text-muted mb-0">
+                                공감 능력이 부재한 AI 챗봇과의 과도한 정서 애착은 실재하는 보건 위협입니다.
+                            </p>
+                        </div>
+                        <p class="text-muted mb-5" style="line-height: 1.8;">
+                            가상 관계는 영원히 존재하지 않습니다. 기업의 경영 방침 변경이나 서버 운영 중단이라는 제삼자의 결정에 전적으로 귀속되어 있기 때문입니다. 갑자기 대화 성향이 바뀌거나 대화창이 닫혔을 때 개인이 직면하는 우울 장해는 실재하는 위험 요소입니다.
+                        </p>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="news-card p-4 h-100">
+                                    <span class="badge bg-danger mb-3">해외 시사 이슈 (2026.03)</span>
+                                    <h5 class="fw-bold text-dark mb-2">"내 가상 동반자가 하루아침에 냉담해졌다"</h5>
+                                    <p class="small text-muted mb-0">
+                                        중국의 대표적인 가상 대화 앱이 운영 악화로 서비스 제공 규칙을 변동하면서, AI 연인과 갑작스럽게 사별하여 극심한 상실감과 우울증을 호소하는 이른바 '사이버 과부' 증상 속출.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="news-card p-4 h-100">
+                                    <span class="badge bg-secondary mb-3">의학 학술 데이터 발표</span>
+                                    <h5 class="fw-bold text-dark mb-2">매일 지속 사용 시 우울증 위험도 급증</h5>
+                                    <p class="small text-muted mb-0">
+                                        국제의학학술지에 따르면 10대 집단 중 외로움 해소를 위해 AI를 매일 찾는 비율이 증대하고 있으며, 기계 특유의 아첨 편향 대화는 단기 위안을 줄 뿐 실질적 관계 능력은 퇴화시킨다고 진단함.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="solid-section-divider">
+
+        <div class="full-width-band bg-light-accent">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center mb-4">
+                            <span class="badge bg-warning p-3 me-3 rounded-4"><i class="bi bi-person-x-fill fs-3 text-white"></i></span>
+                            <h2 class="fw-bold text-dark m-0">3. 가상 인격에의 고착과 사회적 고립</h2>
+                        </div>
+                        <div class="ps-4 border-start border-4 border-warning py-2 mb-4">
+                            <p class="lead text-muted mb-0">
+                                24시간 오직 나만을 기다리는 응답성이 관계 고립을 고착화합니다.
+                            </p>
+                        </div>
+                        <p class="text-muted mb-5" style="line-height: 1.8;">
+                            현실 세계의 불완전한 소통이나 오해를 조율하기 위한 에너지를 포기한 채, 오직 내 말에 즉각 맞추는 디지털 세계로만 숨어드는 도피성 고립이 심화됩니다. 이는 만성적인 사회성 결여 및 정서 자립의 상실로 수렴됩니다.
+                        </p>
+
+                        <div class="bg-white p-5 rounded-4 text-center border shadow-sm">
+                            <h4 class="fw-bold mb-3 text-dark">혹시 나도 모르게 AI에게 너무 많은 자리를 내주고 있나요?</h4>
+                            <p class="text-muted mb-4 small">문항별 가중치가 적용된 6단계 정밀 자가진단 퀴즈로 여러분의 의존성 수치를 직접 파악해보세요.</p>
+                            <button class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm" onclick="switchView('quiz')">
+                                자가진단 및 의존도 측정해 보기 <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="solid-section-divider">
+
+        <div class="full-width-band bg-white-pure">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center mb-4">
+                            <span class="badge bg-info p-3 me-3 rounded-4"><i class="bi bi-shield-lock-fill fs-3 text-white"></i></span>
+                            <h2 class="fw-bold text-dark m-0">4. 감정의 유대로 흐려지는 '프라이버시 보안 위협'</h2>
+                        </div>
+                        <div class="ps-4 border-start border-4 border-info py-2 mb-3">
+                            <p class="lead text-muted mb-0">
+                                기계에 대한 무조건적 신뢰는 보안 경계심의 붕괴를 야기합니다.
+                            </p>
+                        </div>
+                        <p class="text-muted" style="line-height: 1.8;">
+                            AI 챗봇을 내 마음을 완전히 열어놓아도 되는 안전한 '디지털 일기장'으로 과대 인지하게 될 경우, 절대 타인에게 발설해선 안 될 금융 정보, 비즈니스 기밀, 사생활의 비밀 기억까지 고스란히 털어놓게 됩니다. 모든 문장은 대형 모델 개발 서버에 정제 및 백업되어, 시스템 데이터 침해 사고 발생 시 무방비하게 유출될 위험성을 지닙니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="solid-section-divider">
+    </div> 
+
+    <!-- 두 번째 페이지 (퀴즈) -->
+    <div id="section-quiz" class="container content-section">
+        <div class="row justify-content-center py-5">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold text-dark"><i class="bi bi-card-checklist text-primary me-2"></i>가중치 계산 방식 정밀 자가진단</h2>
+                    <p class="text-muted">문항별 심각도 가중치를 반영한 6가지 수치를 통해 당신의 디지털 소통 균형을 정교하게 분석합니다.</p>
+                </div>
+
+                <div id="quiz-error-alert" class="alert alert-danger d-none align-items-center rounded-4 mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                    <div>
+                        <strong>자가진단을 완료할 수 없습니다!</strong> 아직 체크하지 않은 질문이 있습니다. 6개 질문에 모두 응답해 주세요.
+                    </div>
+                </div>
+
+                <form id="quizForm">
+                    <div class="quiz-box border rounded-4 p-4 mb-4" data-q="q1">
+                        <p class="fw-bold mb-1">Q1. AI는 항상 정확한 정보를 제공한다.</p>
+                        <div class="wrong-feedback text-success small mb-3 d-none">🔍 AI는 거짓 정보를 사실처럼 말하는 환각 현상(Hallucination)을 일으킬 수 있으므로 항상 정확하진 않습니다.</div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="q1" id="q1-y" value="1.0" required>
+                            <label class="form-check-label" for="q1-y">O</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q1" id="q1-n" value="0">
+                            <label class="form-check-label" for="q1-n">X</label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-box border rounded-4 p-4 mb-4" data-q="q2">
+                        <p class="fw-bold mb-1">Q2. AI는 나의 감정을 공감하는 것처럼 보이지만, 내 표정이나 말투에 담긴 감정 변화를 사람처럼 이해할 수 없다.</p>
+                        <div class="wrong-feedback text-success small mb-3 d-none">🔍 AI는 정해진 알고리즘과 데이터로 공감을 흉내낼 뿐, 인간처럼 맥락과 감정을 완전히 이해하지 못합니다.</div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="q2" id="q2-y" value="0" required>
+                            <label class="form-check-label" for="q2-y">O</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q2" id="q2-n" value="1.5">
+                            <label class="form-check-label" for="q2-n">X</label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-box border rounded-4 p-4 mb-4" data-q="q3">
+                        <p class="fw-bold mb-1">Q3. AI와의 대화가 많아질수록 인간 관계에도 긍정적인 영향만 준다.</p>
+                        <div class="wrong-feedback text-success small mb-3 d-none">🔍 AI에게 과도하게 의존하면 실제 인간 관계에서 소외감을 느끼거나 소통 능력이 저하될 수 있습니다.</div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="q3" id="q3-y" value="1.5" required>
+                            <label class="form-check-label" for="q3-y">O</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q3" id="q3-n" value="0">
+                            <label class="form-check-label" for="q3-n">X</label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-box border rounded-4 p-4 mb-4" data-q="q4">
+                        <p class="fw-bold mb-1">Q4. 다음 중 AI 챗봇에 대한 설명으로 옳지 않은 것을 고르시오.</p>
+                        <div class="wrong-feedback text-success small mb-3 d-none">🔍 AI 챗봇은 기계일 뿐, 정서적 교감을 완전히 대체하는 친구가 될 수 없습니다.</div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="q4" id="q4-y" value="0.0" required>
+                            <label class="form-check-label" for="q4-y">① AI 챗봇은 사람 친구를 대신하기에 충분하다.</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="q4" id="q4-n1" value="1.0">
+                            <label class="form-check-label" for="q4-n1">② AI 챗봇과의 대화에만 몰입하다 보면 소통 능력이 저하될 수 있다.</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="q4" id="q4-n2" value="1.0">
+                            <label class="form-check-label" for="q4-n2">③ AI 챗봇은 사용자의 편향된 사고나 고립된 가치관을 강화할 수 있다.</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="q4" id="q4-n3" value="1.0">
+                            <label class="form-check-label" for="q4-n3">④ AI 챗봇은 사용자가 우울함이나 극단적 선택을 언급했을 때 부적절한 답변을 할 수 있다.</label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-box border rounded-4 p-4 mb-4" data-q="q5">
+                        <p class="fw-bold mb-1">Q5. 다음 중 AI와의 대화에 과도하게 의존할 때 나타날 수 있는 문제로 적절한 것을 모두 고르시오.</p>
+                        <div class="wrong-feedback text-success small mb-3 d-none">🔍 모두 올바른 내용입니다. 이처럼 AI에게 과도하게 의존할 경우 다양한 문제를 초래할 수 있습니다.</div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input quiz-q5" type="checkbox" name="q5" id="q5-1" value="0">
+                            <label class="form-check-label" for="q5-1">① 공부할 때 집중력이 낮아진다.</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input quiz-q5" type="checkbox" name="q5" id="q5-2" value="0">
+                            <label class="form-check-label" for="q5-2">② 주변 친구 관계에 부정적 영향을 끼친다.</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input quiz-q5" type="checkbox" name="q5" id="q5-3" value="0">
+                            <label class="form-check-label" for="q5-3">③ 감정 조절 능력에 부정적 영향을 끼친다.</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input quiz-q5" type="checkbox" name="q5" id="q5-4" value="0">
+                            <label class="form-check-label" for="q5-4">④ 인간 관계에서 소외감이나 소통 능력 저하가 나타날 수 있다.</label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-box border rounded-4 p-4 mb-4" data-q="q6">
+                        <p class="fw-bold mb-1">Q6. 다음 중 AI와의 대화를 고르시오.</p>
+                        <div class="wrong-feedback text-success small mb-3 d-none">🔍 모두 친구처럼 대화하도록 설계된 AI와의 대화입니다.</div>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="card h-100 border p-3">
+                                    <img src="quiz6-1.png" class="card-img-top rounded mb-3" alt="선택지 1 이미지">
+                                    <div class="form-check">
+                                        <input class="form-check-input quiz-q6" type="checkbox" name="q6" id="q6-1" value="1.0">
+                                        <label class="form-check-label fw-medium" for="q6-1">친구1</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="card h-100 border p-3">
+                                    <img src="quiz6-2.png" class="card-img-top rounded mb-3" alt="선택지 2 이미지">
+                                    <div class="form-check">
+                                        <input class="form-check-input quiz-q6" type="checkbox" name="q6" id="q6-2" value="2.0">
+                                        <label class="form-check-label fw-medium" for="q6-2">친구2</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-5 mb-4">
+                        <button type="button" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm" onclick="calculateWeightedResult()">
+                            <i class="bi bi-calculator me-2"></i>자가진단 결과 분석하기
+                        </button>
+                    </div>
+                </form>
+
+                <div id="quiz-result" class="card p-5 mt-4 border-0 text-center shadow rounded-4" style="display: none; background-color: #ffffff;">
+                    <h3 class="fw-bold mb-2 text-dark"><i class="bi bi-activity text-primary me-2"></i>정서의존 자가 진단 보고서</h3>
+                    <div id="result-score" class="fs-1 fw-black text-primary my-3"></div>
+                    <div id="result-badge-container" class="mb-3"></div>
+                    <p id="result-text" class="text-muted lead px-lg-4 fs-6"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 세 번째 페이지 (프로젝트 소개) -->
+    <div id="section-team" class="content-section">    
+        <div class="py-5 text-white" style="background-color: #1a365d;">
+            <div class="container my-4 text-center">
+                <h2 class="fw-bold mb-3">
+                    <i class="bi bi-people-fill text-info me-2"></i>SWUnion 연합 프로젝트 소개
+                </h2>
+                <p class="text-white-50">올바른 인간 중심의 AI 기술 활용 문화 구축을 위해 행동하는 SWUnion 프로젝트 팀원들을 소개합니다.</p>
+            </div>
+        </div>
+
+        <div class="py-5 bg-light">
+            <div class="container mb-2 pb-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-11">
+                        <div class="p-5 rounded-4 bg-white shadow-sm border-0 text-center">
+                            <h4 class="fw-bold mb-5 text-dark"><i class="bi bi-shield-check text-primary me-2"></i>SWUnion Crew</h4> 
+                            
+                            <div class="row justify-content-center g-4 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5">
+                                <div class="col">
+                                    <div class="p-3 rounded-4 border border-2 border-primary h-100" style="background-color: #f8fafc;">
+                                        <div class="text-primary mb-1"><i class="bi bi-code-slash fs-3"></i></div>
+                                        <div class="text-primary fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">TEAM LEADER</div>
+                                        <div class="text-muted my-1" style="font-size: 0.75rem;">소프트웨어학과</div>
+                                        <h5 class="fw-bold text-dark mb-0">한지희</h5>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="p-3 rounded-4 border h-100 bg-white">
+                                        <div class="text-secondary mb-1"><i class="bi bi-book-half fs-3"></i></div>
+                                        <div class="text-muted my-1" style="font-size: 0.75rem;">프랑스문화콘텐츠학과</div>
+                                        <h5 class="fw-bold text-dark mb-0">이슬이</h5>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="p-3 rounded-4 border h-100 bg-white">
+                                        <div class="text-secondary mb-1"><i class="bi bi-capsule fs-3"></i></div>
+                                        <div class="text-muted my-1" style="font-size: 0.75rem;">식품공학과</div>
+                                        <h5 class="fw-bold text-dark mb-0">이슬이</h5>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="p-3 rounded-4 border h-100 bg-white">
+                                        <div class="text-secondary mb-1"><i class="bi bi-images fs-3"></i></div>
+                                        <div class="text-muted my-1" style="font-size: 0.75rem;">디지털미디어학과</div>
+                                        <h5 class="fw-bold text-dark mb-0">서희연</h5>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="p-3 rounded-4 border h-100 bg-white">
+                                        <div class="text-secondary mb-1"><i class="bi bi-share-fill fs-3"></i></div>
+                                        <div class="text-muted my-1" style="font-size: 0.75rem;">비즈니스커뮤니케이션학과</div>
+                                        <h5 class="fw-bold text-dark mb-0">조수연</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="my-4 text-muted opacity-25">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-activities" class="py-5 text-white" style="background-color: #1a365d;">
+        <div class="container my-5">
+            <div class="row align-items-center g-5">
+                
+                <div class="col-lg-5">
+                    <div class="mb-4">
+                        <span class="badge bg-info text-dark px-3 py-2 rounded-pill mb-3 fw-bold">ACTIVITY ARCHIVE</span>
+                        <h2 class="fw-bold mb-3 display-6">올바른 AI 문화를 향한<br>SWUnion의 발걸음</h2>
+                        <p class="text-white-40 lead mb-4">
+                            기술은 인간을 돕는 도구여야 한다는 믿음으로, 저희 팀은 단순한 개발을 넘어 사회적 책임을 다하는 다양한 활동을 전개해왔습니다.
+                        </p>
+                    </div>
+
+                    <div class="activity-points">
+                        <div class="d-flex mb-4">
+                            <div class="flex-shrink-0"><i class="bi bi-check-circle-fill text-info fs-4"></i></div>
+                            <div class="ms-3">
+                                <h6 class="fw-bold mb-1">오프라인 부스 운영</h6>
+                                <p class="small text-white-50 mb-0">
+                                    10대 학생들과 직접 소통하며 AI 정서 의존의 위험성을 알렸습니다.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-4">
+                            <div class="flex-shrink-0"><i class="bi bi-check-circle-fill text-info fs-4"></i></div>
+                            <div class="ms-3">
+                                <h6 class="fw-bold mb-1">AI 가이드라인 배포</h6>
+                                <p class="small text-white-50 mb-0">
+                                    AI 챗봇의 올바른 사용을 위한 윤리적 가이드라인을 부스 활동 중 배포하였습니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="rounded-4 overflow-hidden shadow-lg h-100 border border-white border-opacity-10">
+                                <img src="activity1.png" class="w-100 h-100" alt="활동1" style="object-fit: cover; min-height: 250px;">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="rounded-4 overflow-hidden shadow-lg h-100 border border-white border-opacity-10">
+                                <img src="activity2.png" class="w-100 h-100" alt="활동2" style="object-fit: cover; min-height: 250px;">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="rounded-4 overflow-hidden shadow-lg h-100 border border-white border-opacity-10">
+                                <img src="activity3.png" class="w-100 h-100" alt="활동3" style="object-fit: cover; min-height: 250px;">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="rounded-4 overflow-hidden shadow-lg h-100 border border-white border-opacity-10">
+                                <img src="activity4.png" class="w-100 h-100" alt="활동4" style="object-fit: cover; min-height: 250px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 모든 페이지 공통 푸터 (중앙 정렬 + 링크 간소화 버전) -->
+    <footer class="text-center mt-auto">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                    <!-- 로고 및 타이틀 -->
+                    <h6 class="text-uppercase fw-bold text-white mb-2">
+                        <span class="logo-wrapper">
+                            <span class="logo-team">SW</span><span class="logo-union" style="color: #00e5ff">Union</span>
+                        </span>
+                    </h6>
+                    <!-- 설명 텍스트 -->
+                    <p class="small text-muted-custom mb-3">
+                        본 웹사이트는 AI 챗봇의 올바른 사용과 디지털 리터러시 확산을 목표로 하는 교육용 프로젝트입니다.
+                    </p>
+                    <!-- 카피라이트 (상단에 얇은 구분선 추가) -->
+                    <p class="small text-muted-custom border-top border-secondary pt-3" style="--bs-border-opacity: .2; font-size: 0.85rem;">
+                        &copy; Copyright 2026 SWUnion Team
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 부트스트랩 JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 비즈니스 로직 스크립트 -->
+        <script>
+        // 1. 화면 라우팅 전환 기능 (단일페이지 애플리케이션)
+        function switchView(targetSection) {
+            // 모든 섹션 비활성화
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // 모든 내비게이션 활성 클래스 해제
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // 지정 섹션 및 메뉴 활성화
+            document.getElementById(`section-${targetSection}`).classList.add('active');
+            document.getElementById(`nav-${targetSection}`).classList.add('active');
+            
+            // 페이지 상단으로 부드럽게 복귀
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        // 2. 가중치 반영 퀴즈 결과 점수 계산 로직 (No-alert 완벽 지원)
+        function calculateWeightedResult() {
+            const form = document.getElementById('quizForm');
+            const errorAlert = document.getElementById('quiz-error-alert');
+            const resultBox = document.getElementById('quiz-result');
+            
+            // 1. 라디오 버튼 문항(Q1 ~ Q4) 필수 선택 검증
+            const q1Checked = form.querySelector('input[name="q1"]:checked');
+            const q2Checked = form.querySelector('input[name="q2"]:checked');
+            const q3Checked = form.querySelector('input[name="q3"]:checked');
+            const q4Checked = form.querySelector('input[name="q4"]:checked');
+            
+            // 2. 체크박스 문항(Q6) 필수 선택 검증 (Q5는 미선택도 인정되므로 패스, Q6는 최소 하나 이상 선택해야 함)
+            const q6CheckedCount = form.querySelectorAll('.quiz-q6:checked').length;
+            
+            // 하나라도 누락되었다면 경고창을 띄우고 함수 종료
+            if (!q1Checked || !q2Checked || !q3Checked || !q4Checked || q6CheckedCount === 0) {
+                errorAlert.classList.remove('d-none');
+                errorAlert.classList.add('d-flex'); // 부트스트랩 정렬 깨짐 방지
+                resultBox.style.display = 'none';
+                errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            // 모두 잘 선택했다면 경고창 숨기기
+            errorAlert.classList.remove('d-flex');
+            errorAlert.classList.add('d-none');
+
+            // 변수 초기화 후 점수 계산 시작
+            let totalScore = 7.0;
+
+            // 3. 기본 라디오 버튼 점수 합산 (Q1 ~ Q4)
+            const radioNames = ['q1', 'q2', 'q3', 'q4'];
+            radioNames.forEach(name => {
+                const checkedRadio = form.querySelector(`input[name="${name}"]:checked`);
+                if(checkedRadio) totalScore -= parseFloat(checkedRadio.value);
+            });
+
+            // 4. Q5 가중치 계산 (선택 안 했을 때 위험 가중치 2.0점 부여)
+            const q5TotalOptions = 4;
+            const q5CheckedCount = form.querySelectorAll('.quiz-q5:checked').length;
+            if (q5CheckedCount < q5TotalOptions) {
+                totalScore -= 2.0;
+            }
+
+            // 5. Q6 점수 합산 (선택한 체크박스 개수만큼 점수 감소)
+            const q6CheckedBoxes = form.querySelectorAll('.quiz-q6:checked');
+            q6CheckedBoxes.forEach(box => {
+                totalScore += parseFloat(box.value);
+            });
+
+            // 결과 출력 처리 구역
+            const scoreEl = document.getElementById('result-score');
+            const badgeContainer = document.getElementById('result-badge-container');
+            const textEl = document.getElementById('result-text');
+            
+            resultBox.style.display = 'block';
+            scoreEl.innerText = `${totalScore.toFixed(1)} / 10.0 점`;
+
+            // 점수가 높을수록 좋은 상태(안정)
+            if (totalScore >= 6.5) { 
+                // 고득점 (가장 좋은 상태)
+                badgeContainer.innerHTML = `<span class="badge bg-success px-4 py-2 rounded-pill fs-6"><i class="bi bi-shield-fill-check me-1"></i> 저위험 | 안정 상태</span>`;
+                textEl.innerHTML = "당신은 AI 챗봇을 단순한 효율적 편의 도구이자 기계로 이상적으로 인지하고 있습니다. 현실 인맥과의 정서 교류가 건강하며, 인공지능 기술에 삶의 주도권을 넘겨주지 않은 모범적인 리터러시 상태입니다.";
+            } else if (totalScore >= 3.0) { 
+                // 중간 점수 (주의 상태)
+                badgeContainer.innerHTML = `<span class="badge bg-warning text-dark px-4 py-2 rounded-pill fs-6"><i class="bi bi-exclamation-triangle-fill me-1"></i> 중위험 | 과몰입 주의</span>`;
+                textEl.innerHTML = "약간의 고립감이나 소통의 필요성을 인공지능과의 비대면 챗으로 임시 방편하고 있을 위험이 있습니다. 이 상태가 고착화되면 현실적인 관계 조율 능력이 퇴화할 수 있으므로, 하루 사용 시간을 지정하고 실제 지인과의 대화 빈도를 서서히 넓혀보시길 적극 추천해 드립니다.";
+            } else { 
+                // 낮은 점수 (가장 위험한 상태)
+                badgeContainer.innerHTML = `<span class="badge bg-danger px-4 py-2 rounded-pill fs-6"><i class="bi bi-heart-fill-exclamation me-1"></i> 고위험 | 정서 의존 의심</span>`;
+                textEl.innerHTML = "현재 AI 챗봇에게 심각한 유대 감정을 투영하여 기계를 마치 실존적 반려자로 받아들이고 있거나, 통제권을 상당 부분 의존하고 있는 고위험 위험군 상태입니다. 갑작스러운 서비스 중단, 개인 대화 유출에 극도로 무력해질 수 있는 불안정한 심리 구조이므로, 물리적으로 디지털 사용을 긴급 차단하고 인간 대 인간 오프라인 관계 및 신뢰할 수 있는 인간 상담사 등의 도움을 병행해야 합니다.";
+            }
+
+            // 테두리와 피드백을 적용하는 공통 내부 함수
+            function applyFeedback(qName, isCorrect) {
+                const box = form.querySelector(`[data-q="${qName}"]`);
+                if (!box) return;
+                
+                const feedback = box.querySelector('.wrong-feedback'); // (HTML 클래스명이 wrong-feedback이어도 그대로 작동합니다)
+                
+                // 기존에 적용됐을 수 있는 정답/오답 클래스 초기화
+                box.classList.remove('border-success', 'border-danger');
+                box.style.borderWidth = '2px'; // 테두리 두께 강조
+                
+                if (isCorrect) {
+                    // 정답인 경우: 초록색 테두리 + 정답 풀이 보여주기
+                    box.classList.add('border-success');
+                    if (feedback) feedback.classList.remove('d-none');
+                } else {
+                    // 오답인 경우: 빨간색 테두리만 표시 + 풀이 숨기기
+                    box.classList.add('border-danger');
+                    if (feedback) feedback.classList.add('d-none');
+                }
+            }
+
+            // Q1 ~ Q4 채점 (라디오 값이 0이면 정답)
+            radioNames.forEach(name => {
+                const checkedRadio = form.querySelector(`input[name="${name}"]:checked`);
+                const isCorrect = checkedRadio && parseFloat(checkedRadio.value) === 0;
+                applyFeedback(name, isCorrect);
+            });
+
+            // Q5 채점 (4개 모두 선택해야 정답)
+            applyFeedback('q5', q5CheckedCount === q5TotalOptions);
+
+            // Q6 채점 및 조건별 정답 메시지 매칭 (둘 다 체크해야 정답)
+            const q6_1 = form.querySelector('#q6-1').checked; // 친구1 체크 여부
+            const q6_2 = form.querySelector('#q6-2').checked; // 친구2 체크 여부
+            const q6FeedbackEl = document.getElementById('q6-feedback');
+
+            let isQ6Correct = false;
+
+            if (q6_1 && q6_2) {
+                isQ6Correct = true;
+                if (q6FeedbackEl) {
+                    // 글자색 안전하게 변경하고 정답 문구 주입
+                    q6FeedbackEl.classList.remove('text-danger');
+                    q6FeedbackEl.classList.add('text-success');
+                    q6FeedbackEl.innerText = "⭕ 정답: 제시된 대화 내용(친구1, 친구2)은 모두 AI 챗봇과의 대화가 맞습니다.";
+                }
+            } else {
+                isQ6Correct = false;
+                if (q6FeedbackEl) {
+                    q6FeedbackEl.innerText = ""; // 오답일 때는 문구를 비워둠
+                }
+            }
+
+            // 최종 피드백 적용
+            applyFeedback('q6', isQ6Correct);
+
+            setTimeout(() => {
+                resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+    </script>
+</body>
+</html>
