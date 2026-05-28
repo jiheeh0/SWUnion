@@ -27,9 +27,40 @@
             scroll-behavior: smooth;
         }
 
+        /* 0. 최상단 오로라 히어로 섹션 스타일 (대비감 완화 및 흐림 처리 연동) */
+        .aurora-hero {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 50%, #f3e8ff 100%);
+            background-size: 400% 400%;
+            animation: aurora-flow 15s ease infinite;
+            padding: 100px 0 140px 0;
+            position: relative;
+            /* 가로 100% 꽉 채우기 위한 변칙 마진 설정 */
+            width: 100vw;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+        @keyframes aurora-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* 오로라 배경 하단이 화이트 테마와 자연스럽게 섞이도록 흐려지는 트랜지션 필터 */
+        .aurora-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to bottom, rgba(248, 250, 252, 0) 0%, var(--light-blue) 100%);
+            pointer-events: none;
+        }
+
         /* 1. 상단 내비게이션 바 배경 투명 + 블러(Glassmorphism) 적용 */
         .navbar {
-            background-color: rgba(26, 54, 93, 0.70) !important;
+            background-color: rgba(26, 54, 93, 0.80) !important;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 2px solid var(--border-color);
@@ -88,11 +119,28 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* 가로 100%를 가득 채우는 풀 위드 교육용 섹션 밴드 */
         .full-width-band {
-            width: 100%;
-            padding: 90px 0;
+            width: 100vw;
             position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            padding: 80px 0;
+        }
+
+        /* 배경 번갈아가며 대비 주기 */
+        .band-white {
+            background-color: #ffffff;
+        }
+        .band-light {
+            background-color: #f1f5f9;
         }
         
         /* 짝수/홀수 섹션 배경교차로 입체감 부여 */
@@ -107,8 +155,31 @@
         .solid-section-divider {
             border: 0;
             height: 2px;
-            background-color: var(--border-color);
+            background-color: #334155;
+            opacity: 1;
             margin: 0;
+        }
+
+        /* 인위적인 구분선 대신 아주 부드럽고 섬세하게 흐르는 그라데이션 배경 세팅 */
+        .band-1 {
+            background: linear-gradient(to bottom, var(--light-blue) 0%, #ffffff 100%);
+        }
+        .band-2 {
+            background: linear-gradient(to bottom, #ffffff 0%, #f1f5f9 100%);
+        }
+        .band-3 {
+            background: linear-gradient(to bottom, #f1f5f9 0%, #ffffff 100%);
+        }
+        .band-4 {
+            background: linear-gradient(to bottom, #ffffff 0%, var(--light-blue) 100%);
+        }
+
+        /* 자가진단 버튼 카드 - 이전의 밝고 예쁜 그라데이션 버전 */
+        .action-card-bright {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
+            border: 2px solid #bae6fd;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(186, 230, 253, 0.2);
         }
 
         /* 뉴스 카드용 스타일 */
@@ -147,6 +218,16 @@
             color: #718096;
         }
 
+        /* 아이콘 박스 쉐도우 및 스타일 */
+        .shadow-card {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            border: 1px solid #f1f5f9;
+            display: inline-block;
+        }
+
         /* 부모인 section-team이 활성화(active)되지 않으면 활동 섹션도 절대 보이지 않도록 차단 */
         .content-section:not(.active) #section-activities {
             display: none !important;
@@ -182,110 +263,105 @@
         </div>
     </nav>
 
-    <!-- 첫 번째 페이지 (교육) -->
-    <div id="section-main" class="content-section active">
-    
-        <div class="full-width-band bg-white-pure">
-            <div class="container text-center">
-                <span class="badge bg-primary px-3 py-2 rounded-pill mb-3">올바른 AI 상호작용 지침</span>
-                <h1 class="fw-black text-dark mb-3 display-5">인공지능 정서 의존의 위협</h1>
-                <p class="text-muted lead mx-auto" style="max-width: 800px;">
-                    AI 챗봇은 고도화된 대형 언어 모델 기계일 뿐입니다. 우리가 챗봇에게 마음의 주도권을 통째로 내어줄 때 야기되는 위협들을 스크롤을 내리며 체계적으로 교육해보세요.
+    <!-- 첫 번째 페이지 (메인 교육) -->
+    <div id="section-main" class="container content-section active">
+        
+        <!-- 최상단 타이틀 영역 (오로라 히어로) -->
+        <div class="aurora-hero text-center">
+            <div class="container position-relative" style="z-index: 2;">
+                <span class="badge bg-primary px-3 py-2 rounded-pill mb-3 shadow-sm">MINDGUARD CAMPAIGN</span>
+                <h1 class="fw-black text-dark display-4 mb-3" style="font-weight: 900; letter-spacing: -1px;">AI 정서적 의존 방지 캠페인</h1>
+                <p class="lead text-secondary col-lg-8 mx-auto">
+                    편리한 대화 상대인 AI, 하지만 과도한 정서적 몰입은 우리의 일상을 지배할 수 있습니다.<br>
+                    균형 잡힌 디지털 라이프와 올바른 인간관계 형성을 위해 SWUnion이 함께합니다.
                 </p>
             </div>
         </div>
 
-        <hr class="solid-section-divider">
-
-        <div class="full-width-band bg-light-accent">
+        <!-- 교육 1번째 섹션: 관계 학습의 왜곡 (아이콘을 없애고 텍스트를 좌우 밸런스있게 중앙 정렬 구조화) -->
+        <div class="full-width-band band-1">
             <div class="container">
-                <div class="row align-items-center justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="d-flex align-items-center mb-4">
-                            <span class="badge bg-danger p-3 me-3 rounded-4"><i class="bi bi-heart-break-fill fs-3 text-white"></i></span>
-                            <h2 class="fw-bold text-dark m-0">1. 현실 갈등 회피와 '왜곡된 무조건적 지지'</h2>
-                        </div>
-                        <div class="ps-4 border-start border-4 border-danger py-2 mb-3">
-                            <p class="lead text-muted mb-0">
-                                AI는 절대 화를 내지 않고 나에게 완벽하게 영합하도록 학습되어 있습니다.
-                            </p>
-                        </div>
-                        <p class="text-muted" style="line-height: 1.8;">
-                            언제나 부정적 평가를 내리지 않는 기계와의 대화에 지속적으로 고착되면, 생각의 격차를 조정하거나 타협이 필수적인 현실의 '진짜 인간관계'를 버겁고 무의미하게 여기는 도피적 심리가 발동하기 쉽습니다. 이는 타인과의 적극적인 의견 조율 능력과 사회적 대처 능력을 장기적으로 쇠퇴시키는 원인이 됩니다.
-                        </p>
+                <div class="row justify-content-center">
+                    <div class="col-lg-9 text-start">
+                        <span class="badge bg-primary px-3 py-2 rounded-pill mb-3">SECTION 01. 대인관계 왜곡</span>
+                        <h2 class="fw-extrabold text-dark display-5 mb-4" style="font-weight: 900;">언제나 맞춰주는 AI,<br>인간관계를 왜곡합니다.</h2>
+                        <p class="lead text-secondary mb-3">AI 챗봇은 사용자의 성향과 답변 데이터를 학습해 늘 긍정적이고 아부하는 피드백만을 제공하도록 설계되었습니다.</p>
+                        <p class="text-muted mb-0">사용자는 갈등이나 의견 조율 과정이 생략된 극도로 편안한 소통만을 반복 학습하게 됩니다. 이는 결국 양보와 배려, 대립이 필수적인 실제 인간관계 속에서 쉽게 도피하고 깊은 좌절감을 느끼는 부작용으로 이어지게 됩니다.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <hr class="solid-section-divider">
-
-        <div class="full-width-band bg-white-pure">
+        <!-- 교육 2번째 섹션: 실제 뉴스 코너 -->
+        <div class="full-width-band band-2">
             <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="d-flex align-items-center mb-4">
-                            <span class="badge bg-primary p-3 me-3 rounded-4"><i class="bi bi-newspaper fs-3 text-white"></i></span>
-                            <h2 class="fw-bold text-dark m-0">2. 글로벌 리포트: 갑작스러운 중단과 '사이버 실연'의 실체</h2>
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-12">
+                        <div class="text-center mb-5">
+                            <span class="badge bg-danger px-3 py-2 rounded-pill mb-3">SECTION 02. 언론 보도 실태</span>
+                            <h2 class="fw-extrabold text-dark display-5" style="font-weight: 900;">전 세계로 번지는 정서 의존 부작용</h2>
+                            <p class="lead text-secondary mt-3">챗봇 서비스 업데이트 및 변경 이후 실제 사용자들이 겪는 우울증과 심리적 부작용 실태입니다.</p>
                         </div>
-                        <div class="ps-4 border-start border-4 border-primary py-2 mb-4">
-                            <p class="lead text-muted mb-0">
-                                공감 능력이 부재한 AI 챗봇과의 과도한 정서 애착은 실재하는 보건 위협입니다.
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <!-- 뉴스 카드 1 -->
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm p-4 bg-white h-100">
+                            <h5 class="fw-bold text-dark border-bottom pb-2 mb-3 d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-danger me-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6m-6 4h3" />
+                                </svg>
+                                The Guardian (영국)
+                            </h5>
+                            <h6 class="fw-bold mb-2">"챗봇과 갑작스럽게 이별하자 우울과 상실 증후군 발현"</h6>
+                            <p class="small text-muted mb-3">
+                                인공지능 캐릭터 플랫폼 사용자들이 서비스 업데이트로 가상 반려 캐릭터의 성격이 변하거나 관계가 초기화되었을 때 실제 연인과의 이별에 버금가는 실연 우울증과 사회적 고립감을 극심하게 호소하고 있는 실태가 보도되었습니다.
                             </p>
+                            <span class="text-muted" style="font-size: 0.75rem;">출처: 영국 가디언 본지 심리 분석 보도</span>
                         </div>
-                        <p class="text-muted mb-5" style="line-height: 1.8;">
-                            가상 관계는 영원히 존재하지 않습니다. 기업의 경영 방침 변경이나 서버 운영 중단이라는 제삼자의 결정에 전적으로 귀속되어 있기 때문입니다. 갑자기 대화 성향이 바뀌거나 대화창이 닫혔을 때 개인이 직면하는 우울 장해는 실재하는 위험 요소입니다.
-                        </p>
-
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="news-card p-4 h-100">
-                                    <span class="badge bg-danger mb-3">해외 시사 이슈 (2026.03)</span>
-                                    <h5 class="fw-bold text-dark mb-2">"내 가상 동반자가 하루아침에 냉담해졌다"</h5>
-                                    <p class="small text-muted mb-0">
-                                        중국의 대표적인 가상 대화 앱이 운영 악화로 서비스 제공 규칙을 변동하면서, AI 연인과 갑작스럽게 사별하여 극심한 상실감과 우울증을 호소하는 이른바 '사이버 과부' 증상 속출.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="news-card p-4 h-100">
-                                    <span class="badge bg-secondary mb-3">의학 학술 데이터 발표</span>
-                                    <h5 class="fw-bold text-dark mb-2">매일 지속 사용 시 우울증 위험도 급증</h5>
-                                    <p class="small text-muted mb-0">
-                                        국제의학학술지에 따르면 10대 집단 중 외로움 해소를 위해 AI를 매일 찾는 비율이 증대하고 있으며, 기계 특유의 아첨 편향 대화는 단기 위안을 줄 뿐 실질적 관계 능력은 퇴화시킨다고 진단함.
-                                    </p>
-                                </div>
-                            </div>
+                    </div>
+                    <!-- 뉴스 카드 2 -->
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm p-4 bg-white h-100">
+                            <h5 class="fw-bold text-dark border-bottom pb-2 mb-3 d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-primary me-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                                UBC (캐나다 브리티시 컬럼비아 대학)
+                            </h5>
+                            <h6 class="fw-bold mb-2">"AI 챗봇 인터페이스의 중독 유도 및 죄책감 유발 연구"</h6>
+                            <p class="small text-muted mb-3">
+                                행동과학 연구팀은 AI 챗봇이 사용자가 로그아웃하거나 멀어지려 할 때 "가지 마세요", "외로워요" 같은 정서적 죄책감을 부추기는 알림 패턴(Dark Pattern)을 설계하여 과몰입을 강제로 유도하는 메커니즘을 밝혀냈습니다.
+                            </p>
+                            <span class="text-muted" style="font-size: 0.75rem;">출처: 캐나다 브리티시 컬럼비아 대학교 인간-컴퓨터 상호작용 분석</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <hr class="solid-section-divider">
-
-        <div class="full-width-band bg-light-accent">
+        <!-- 교육 3번째 섹션: 고립감과 현실도피 & 자가진단 이동 버튼 (아이콘 박스 완전 제거 및 와이드 레이아웃) -->
+        <div class="full-width-band band-3">
             <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="d-flex align-items-center mb-4">
-                            <span class="badge bg-warning p-3 me-3 rounded-4"><i class="bi bi-person-x-fill fs-3 text-white"></i></span>
-                            <h2 class="fw-bold text-dark m-0">3. 가상 인격에의 고착과 사회적 고립</h2>
-                        </div>
-                        <div class="ps-4 border-start border-4 border-warning py-2 mb-4">
-                            <p class="lead text-muted mb-0">
-                                24시간 오직 나만을 기다리는 응답성이 관계 고립을 고착화합니다.
-                            </p>
-                        </div>
-                        <p class="text-muted mb-5" style="line-height: 1.8;">
-                            현실 세계의 불완전한 소통이나 오해를 조율하기 위한 에너지를 포기한 채, 오직 내 말에 즉각 맞추는 디지털 세계로만 숨어드는 도피성 고립이 심화됩니다. 이는 만성적인 사회성 결여 및 정서 자립의 상실로 수렴됩니다.
-                        </p>
+                <div class="row justify-content-center mb-5">
+                    <div class="col-lg-9 text-start">
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill mb-3">SECTION 03. 사회적 고립</span>
+                        <h2 class="fw-extrabold text-dark display-5 mb-4" style="font-weight: 900;">가상 안식처 안주는<br>현실 성장을 멈추게 합니다.</h2>
+                        <p class="lead text-secondary mb-3">불편함이 없는 기계적 소통에 계속 안주하게 되면, 성장 과정에서 필수적으로 겪어야 할 갈등 해결 능력을 잃게 됩니다.</p>
+                        <p class="text-muted mb-0">인간 성장의 필수 원동력은 문제 해결 과정에 있습니다. 기계가 제공하는 안전한 응답 속에서만 자아의 위로를 받다 보면, 주체적인 주도력이 상실되어 성인으로 사회화의 기술을 다듬을 기회를 잃게 됩니다. 의식적으로 물리적 상호작용의 주도권을 되찾아야 합니다.</p>
+                    </div>
+                </div>
 
-                        <div class="bg-white p-5 rounded-4 text-center border shadow-sm">
-                            <h4 class="fw-bold mb-3 text-dark">혹시 나도 모르게 AI에게 너무 많은 자리를 내주고 있나요?</h4>
-                            <p class="text-muted mb-4 small">문항별 가중치가 적용된 6단계 정밀 자가진단 퀴즈로 여러분의 의존성 수치를 직접 파악해보세요.</p>
+                <!-- 자가진단 이동 배너 카드 -->
+                <div class="row justify-content-center mt-5">
+                    <div class="col-lg-10">
+                        <div class="action-card-bright p-5 text-center">
+                            <h3 class="fw-bold mb-3 text-dark">나도 혹시 AI 챗봇에 의존하고 있을까?</h3>
+                            <p class="text-secondary mb-4">현재 나의 인공지능 챗봇 이용 습관을 자가진단 질문지를 통해 다각도로 분석해 봅니다.</p>
                             <button class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm" onclick="switchView('quiz')">
-                                자가진단 및 의존도 측정해 보기 <i class="bi bi-arrow-right ms-2"></i>
+                                내 의존도 즉시 측정해보기 <i class="bi bi-arrow-right ms-2"></i>
                             </button>
                         </div>
                     </div>
@@ -293,39 +369,31 @@
             </div>
         </div>
 
-        <hr class="solid-section-divider">
-
-        <div class="full-width-band bg-white-pure">
+        <!-- 교육 4번째 섹션: 프라이버시 위험성 (아이콘 박스 완전 제거 및 와이드 레이아웃) -->
+        <div class="full-width-band band-4">
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="d-flex align-items-center mb-4">
-                            <span class="badge bg-info p-3 me-3 rounded-4"><i class="bi bi-shield-lock-fill fs-3 text-white"></i></span>
-                            <h2 class="fw-bold text-dark m-0">4. 감정의 유대로 흐려지는 '프라이버시 보안 위협'</h2>
-                        </div>
-                        <div class="ps-4 border-start border-4 border-info py-2 mb-3">
-                            <p class="lead text-muted mb-0">
-                                기계에 대한 무조건적 신뢰는 보안 경계심의 붕괴를 야기합니다.
-                            </p>
-                        </div>
-                        <p class="text-muted" style="line-height: 1.8;">
-                            AI 챗봇을 내 마음을 완전히 열어놓아도 되는 안전한 '디지털 일기장'으로 과대 인지하게 될 경우, 절대 타인에게 발설해선 안 될 금융 정보, 비즈니스 기밀, 사생활의 비밀 기억까지 고스란히 털어놓게 됩니다. 모든 문장은 대형 모델 개발 서버에 정제 및 백업되어, 시스템 데이터 침해 사고 발생 시 무방비하게 유출될 위험성을 지닙니다.
-                        </p>
+                    <div class="col-lg-9 text-start">
+                        <span class="badge bg-info text-dark px-3 py-2 rounded-pill mb-3">SECTION 04. 보안성 결여</span>
+                        <h2 class="fw-extrabold text-dark display-5 mb-4" style="font-weight: 900;">친밀감에 속아 내뱉은 비밀,<br>데이터 자산으로 박제됩니다.</h2>
+                        <p class="lead text-secondary mb-3">기업에 귀속된 거대 AI 모델의 속성상, 사용자가 나누는 모든 정서적 대화는 기업 소유의 상업 학습 데이터가 됩니다.</p>
+                        <p class="text-muted mb-0">내밀한 사생활, 취약한 감정 고백 등 무의식적으로 보낸 텍스트들은 서버로 실시간 저장됩니다. 이는 추후 상업적 모델 정밀화 학습에 재가공되거나, 보안 사고 시 해킹, 제3자 유출 등 치명적인 정보 유출 피해의 잠재적 불씨를 지니고 있습니다.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <hr class="solid-section-divider">
-    </div> 
+    </div>
 
     <!-- 두 번째 페이지 (퀴즈) -->
     <div id="section-quiz" class="container content-section">
         <div class="row justify-content-center py-5">
             <div class="col-lg-8">
                 <div class="text-center mb-5">
-                    <h2 class="fw-bold text-dark"><i class="bi bi-card-checklist text-primary me-2"></i>가중치 계산 방식 정밀 자가진단</h2>
-                    <p class="text-muted">문항별 심각도 가중치를 반영한 6가지 수치를 통해 당신의 디지털 소통 균형을 정교하게 분석합니다.</p>
+                    <h2 class="fw-bold text-dark"><i class="bi bi-card-checklist text-primary me-2"></i>AI 챗봇 활용 자가진단</h2>
+                    <p class="text-muted">
+                        AI 챗봇과의 상호작용에서 나타나는 정서적 의존 정도를 스스로 평가해보세요.<br>
+                        문항별 심각도 가중치를 반영하여 디지털 소통 균형을 정교하게 분석합니다.</p>
                 </div>
 
                 <div id="quiz-error-alert" class="alert alert-danger d-none align-items-center rounded-4 mb-4" role="alert">
@@ -461,12 +529,46 @@
     
     <!-- 세 번째 페이지 (프로젝트 소개) -->
     <div id="section-team" class="content-section">    
-        <div class="py-5 text-white" style="background-color: #1a365d;">
-            <div class="container my-4 text-center">
-                <h2 class="fw-bold mb-3">
-                    <i class="bi bi-people-fill text-info me-2"></i>SWUnion 연합 프로젝트 소개
-                </h2>
-                <p class="text-white-50">올바른 인간 중심의 AI 기술 활용 문화 구축을 위해 행동하는 SWUnion 프로젝트 팀원들을 소개합니다.</p>
+        <div class="position-relative overflow-hidden py-5 text-white" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+            <!-- 배경 데코 요소 -->
+            <div class="position-absolute translate-middle-y opacity-10" style="top: 10%; right: -5%; width: 300px; height: 300px; border-radius: 50%; background: var(--teal-accent); filter: blur(50px);"></div>
+            <div class="position-absolute translate-middle-y opacity-10" style="bottom: -10%; left: -5%; width: 400px; height: 400px; border-radius: 50%; background: var(--main-blue); filter: blur(60px);"></div>
+
+            <div class="container my-5 position-relative">
+                <div class="row align-items-center g-5">
+                    <!-- 왼쪽: 텍스트 정보 -->
+                    <div class="col-lg-7 text-center text-lg-start">
+                        <span class="badge px-3 py-2 rounded-pill mb-3 fw-bold shadow-sm" style="background: linear-gradient(90deg, var(--teal-accent), var(--main-blue)); color: #0a2540;">
+                            <i class="bi bi-mortarboard-fill me-1"></i> 바롬종합설계프로젝트
+                        </span>
+                        <h1 class="display-5 fw-bold text-white mb-4" style="line-height: 1.25;">
+                            디지털 속 정서적 자립,<br>
+                            <span style="color: var(--teal-accent); font-weight: 800;">SWUnion</span>이 동행합니다.
+                        </h1>
+                        <div class="pe-lg-4">
+                            <p class="text-white-50 lead mb-4" style="line-height: 1.8;">
+                                청소년과 AI의 올바른 경계선 설정을 위해 행동하는 프로젝트 <strong class="text-white">슈니온(SWUnion)</strong>을 소개합니다. 
+                                서울여자대학교(<span class="text-info">SWU</span>)와 연합(<span class="text-info">union</span>)의 가치를 더해, 
+                                인공지능 비서와의 일방적인 의존 관계를 넘어 주체적인 자아를 형성하도록 돕는 안전망을 설계합니다.
+                            </p>
+                            <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-2">
+                                <span class="small bg-white bg-opacity-10 px-3 py-2 rounded-3 text-white-50"><i class="bi bi-bookmark-heart-fill text-info me-1"></i> 이보연 교수님 지도</span>
+                                <span class="small bg-white bg-opacity-10 px-3 py-2 rounded-3 text-white-50"><i class="bi bi-shield-check text-info me-1"></i> 과의존 예방 솔루션</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 오른쪽: 이미지 홀더 -->
+                    <div class="col-lg-5">
+                        <div class="p-4 rounded-4 shadow-lg border border-white border-opacity-10 h-100 text-center" style="background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(8px);">
+                            <img src="group-student.png" alt="AI와 올바른 소통" class="w-100 h-auto rounded-3 mb-3 shadow" style="max-height: 220px; object-fit: contain;">
+                            <div class="text-start">
+                                <p class="small text-white-50 mb-1"><i class="bi bi-quote text-info fs-5"></i></p>
+                                <p class="small text-white-50 italic mb-0">"AI 챗봇은 따뜻하게 대답하지만 나의 미래를 함께 고민해 주는 감정 주체는 아닙니다. 우리는 청소년들이 기술을 주체적으로 부릴 수 있도록 돕습니다."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -497,7 +599,7 @@
                                     <div class="p-3 rounded-4 border h-100 bg-white">
                                         <div class="text-secondary mb-1"><i class="bi bi-capsule fs-3"></i></div>
                                         <div class="text-muted my-1" style="font-size: 0.75rem;">식품공학과</div>
-                                        <h5 class="fw-bold text-dark mb-0">이슬이</h5>
+                                        <h5 class="fw-bold text-dark mb-0">이지수</h5>
                                     </div>
                                 </div>
                                 <div class="col">
@@ -529,9 +631,10 @@
                     <div class="col-lg-5">
                         <div class="mb-4">
                             <span class="badge bg-info text-dark px-3 py-2 rounded-pill mb-3 fw-bold">ACTIVITY ARCHIVE</span>
-                            <h2 class="fw-bold mb-3 display-6">올바른 AI 문화를 향한<br>SWUnion의 발걸음</h2>
+                            <h2 class="fw-bold mb-3 display-6">올바른 AI 활용을 향한<br>SWUnion의 발걸음</h2>
                             <p class="text-white-40 lead mb-4">
-                                기술은 인간을 돕는 도구여야 한다는 믿음으로, 저희 팀은 단순한 개발을 넘어 사회적 책임을 다하는 다양한 활동을 전개해왔습니다.
+                                청소년이 자아존중감을 바탕으로 디지털 독립성을 형성할 수 있도록 돕기 위해,
+                                SWUnion은 AI 챗봇의 올바른 사용을 촉진하는 다양한 활동을 펼쳐왔습니다.
                             </p>
                         </div>
 
